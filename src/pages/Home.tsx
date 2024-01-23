@@ -6,9 +6,8 @@ interface HomeProps {}
 
 type User = {
   id: number;
-  name: string;
   username: string;
-  email: string;
+  password: string;
 };
 
 const Home: FunctionComponent<HomeProps> = () => {
@@ -19,7 +18,8 @@ const Home: FunctionComponent<HomeProps> = () => {
   }, []);
 
   const loadUsers = async () => {
-    const result = await axios.get("http://localhost:8080/users");
+    const result = await axios.get("http://localhost:8080/userAccesses");
+    console.log("Data", result.data);
     setUsers(result.data);
   };
 
@@ -27,10 +27,9 @@ const Home: FunctionComponent<HomeProps> = () => {
     <>
       <Box sx={{ margin: 1 }}>
         {users.map((user, index) => (
-          <Typography sx={{ color: "white" }} key={index}>
-            <p>{user.name}</p>
+          <Typography key={index}>
             <p>{user.username}</p>
-            <p>{user.email}</p>
+            <p>{user.password}</p>
           </Typography>
         ))}
       </Box>
