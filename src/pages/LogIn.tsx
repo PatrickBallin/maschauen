@@ -1,3 +1,4 @@
+import { ThemeContext } from "@emotion/react";
 import {
   Box,
   Button,
@@ -6,17 +7,66 @@ import {
   Typography,
   withStyles,
 } from "@mui/material";
-import { FunctionComponent, useState } from "react";
+import axios from "axios";
+import { FunctionComponent, useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { UserContextType } from "../App";
 
-interface LogInProps {}
+type LogInProps = {
+  user: UserContextType;
 
-const LogIn: FunctionComponent<LogInProps> = () => {
-  const [username, setUsername] = useState<string>();
-  const [password, setPassword] = useState<string>();
+  onValueChange: (obj: Partial<UserContextType>) => void;
+};
 
-  const handleSubmit = (e: any) => {
+const LogIn: FunctionComponent<LogInProps> = (props) => {
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const navigate = useNavigate();
+
+  const handleSucessfullLogIn = () => {
+    console.log("Eingeloggt!");
+    navigate("/dashboard");
+  };
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    console.log("Send Data: ", username, password);
+    // Sent Data to Backend
+    await axios
+      .post("http://localhost:8080/userAuthenticate", {
+        username: username,
+        password: password,
+      })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.username === username) {
+          // Set Userdata to ActiveUser
+          props.onValueChange({
+            id: response.data.id,
+            username: username,
+            password: password,
+          });
+          // Erfolgreich eingeloggt!
+          handleSucessfullLogIn();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const handleUsername = (e: any) => {
+    e.preventDefault();
+    setUsername(e.target.value);
+    console.log(e.target.value);
+  };
+
+  const handlePassword = (e: any) => {
+    e.preventDefault();
+    console.log(e.target.value);
+    setPassword(e.target.value);
   };
 
   return (
@@ -40,6 +90,7 @@ const LogIn: FunctionComponent<LogInProps> = () => {
             id="username"
             label="Username"
             value={username}
+            onChange={(e) => handleUsername(e)}
           ></TextField>
           <TextField
             variant="outlined"
@@ -47,6 +98,7 @@ const LogIn: FunctionComponent<LogInProps> = () => {
             label="password"
             value={password}
             type="password"
+            onChange={(e) => handlePassword(e)}
           ></TextField>
           <Divider sx={{ mt: 4, mb: 4 }}></Divider>
           <Button variant="contained" type="submit">

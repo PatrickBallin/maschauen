@@ -1,7 +1,8 @@
 import { Box, Button, Divider, TextField, Typography } from "@mui/material";
 import axios from "axios";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface RegisterProps {}
 
@@ -13,15 +14,19 @@ const Register: FunctionComponent<RegisterProps> = () => {
   const [user, setUser] = useState<User>({ username: "", password: "" });
   const [seccondPassword, setSeccondPassword] = useState<string>("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log("Info:", user.username, user.password);
 
     // Sent Data to Backend
-    await axios.post("http://localhost:8080/userAccess", {
-      username: user.username,
-      password: user.password,
-    });
+    await axios
+      .post("http://localhost:8080/userAccess", {
+        username: user.username,
+        password: user.password,
+      })
+      .then(() => navigate("/"));
   };
 
   const handleSeccondPassword = (e: any) => {

@@ -2,9 +2,9 @@ import { Box, Button, Typography } from "@mui/material";
 import { FunctionComponent } from "react";
 import { Link } from "react-router-dom";
 
-interface NavbarProps {}
+type NavbarProps = { username: string };
 
-const Navbar: FunctionComponent<NavbarProps> = () => {
+const Navbar: FunctionComponent<NavbarProps> = (props) => {
   return (
     <Box sx={{ height: "70px", backgroundColor: "#2E2E2E" }}>
       <Box sx={{ position: "absolute", left: 40, top: 15 }}>
@@ -14,7 +14,7 @@ const Navbar: FunctionComponent<NavbarProps> = () => {
       </Box>
       <Box sx={{ position: "absolute", right: 40, top: 20 }}>
         <Typography variant="h5" sx={{ color: "white" }}>
-          Username
+          {props.username}
         </Typography>
       </Box>
     </Box>
